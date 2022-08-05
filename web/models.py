@@ -3,7 +3,7 @@ from web.database import Base
 
 
 class Posts(Base):
-    __tablename__ = 'web'
+    __tablename__ = 'posts'
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)

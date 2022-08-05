@@ -1,5 +1,4 @@
 import datetime
-import random
 
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session

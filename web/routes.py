@@ -43,7 +43,7 @@ def update(id: int, request: UpdatePost, db: Session = Depends(get_db)):
     return update_post(id, request, db)
 
 
-@router.get('/blog/{id}/', status_code=status.HTTP_200_OK, response_model=ShowPost)
+@router.get('/{id}/', status_code=status.HTTP_200_OK, response_model=ShowPost)
 def show_post(id: int, db: Session = Depends(get_db)):
     """ endpoint to view specific post """
     return detail_post_view(id, db)

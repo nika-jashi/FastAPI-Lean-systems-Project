@@ -4,6 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+# properties required during post creation
 class PostBase(BaseModel):
     title: str
     description: str
@@ -16,6 +17,7 @@ class Post(PostBase):
         orm_mode = True
 
 
+# properties that appear when client views all posts
 class PostView(PostBase):
     view_count: Optional[int]
     date_posted: date
@@ -24,6 +26,7 @@ class PostView(PostBase):
         orm_mode = True
 
 
+# properties that appear when view individual post
 class ShowPost(BaseModel):
     id: int
     title: str
@@ -37,6 +40,7 @@ class ShowPost(BaseModel):
         orm_mode = True
 
 
+# properties that can be changed with put/patch
 class UpdatePost(BaseModel):
     title: Optional[str]
     description: Optional[str]
