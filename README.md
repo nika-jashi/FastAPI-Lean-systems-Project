@@ -2,7 +2,7 @@
 
 <h3>set up environment for project</h3>
 
-<li>python3.8 -m venv env</li>
+<li>python>=3.8 -m venv env</li>
 <li>source env/bin/activate</li>
 <li><b>pip install -r requirements.txt</b></li>
 

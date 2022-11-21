@@ -3,8 +3,8 @@ import datetime
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
-from web.models import Posts
-from web.schemas import UpdatePost, Post
+from web.models import Posts, User
+from web.schemas import UpdatePost, UserCreate, PostCreate
 from web.database import get_db
 
 
@@ -18,13 +18,9 @@ def get_all_posts(db: Session):
     return all_posts
 
 
-def create_post(request: Post, db: Session = Depends(get_db)):
+def create_post(db: Session, post: PostCreate, user_id: int):
     """ View that creates post """
-    new_post = Posts(title=request.title,
-                     description=request.description,
-                     category=request.category,
-                     author=request.author,
-                     date_posted=datetime.datetime.now())
+    new_post = Posts(**post.dict(), author_id=user_id)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -54,7 +50,7 @@ def update_post(id: int, request: UpdatePost, db: Session = Depends(get_db)):
 
 
 def detail_post_view(id: int, db: Session = Depends(get_db)):
-    """ View where you can get specific post by id """
+    """ View where you can get specific post by id and increment view count by one"""
     specific_post = db.query(Posts).filter(Posts.id == id).first()
     if not specific_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -67,7 +63,7 @@ def detail_post_view(id: int, db: Session = Depends(get_db)):
     return specific_post
 
 
-def get_top_three_posts_view(db: Session):
+def get_hot_posts_view(db: Session):
     """ View for three the most popular posts"""
     all_posts = []
     for post in db.query(Posts).order_by(Posts.view_count.desc()):
@@ -76,3 +72,16 @@ def get_top_three_posts_view(db: Session):
         all_posts.append(post)
 
     return all_posts[0:3]
+
+
+def create_user(db: Session, user: UserCreate):
+    fake_hashed_password = user.password + "notreallyhashed"
+    db_user = User(email=user.email, hashed_password=fake_hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
